@@ -1,0 +1,45 @@
+IEX_freight
+
+import requests
+import pandas as pd
+import matplotlib.pyplot as plt
+
+
+portfolio = ['chrw', 'xpo']
+merged = []
+
+
+i = 0
+for stock in portfolio:
+	url = "https://api.iextrading.com/1.0/stock/" + stock + "/chart/5y/?filter=date,close"
+	temp = requests.get(url)
+	temp = pd.DataFrame(temp.json())
+	temp2 = temp.close.iloc[0]
+	temp.date = pd.to_datetime(temp.date)
+	temp.close = temp.close.diff().cumsum()
+	temp.close.iloc[0] = 0
+	temp.close = temp.close/temp2
+	plt.plot (temp.date, temp.close, label ='chrobinson')
+	
+
+----
+#old
+
+portfolio = ['env','pypl','sq','lc','rdfn','ondk','tree','shop','mb']
+num = len(portfolio)
+merged = env.merge(pypl,how='left',on='date').merge(sq,how='left',on='date').merge(lc,how='left',on='date').merge(rdfn,how='left',on='date').merge(ondk,how='left',on='date').merge(tree,how='left',on='date').merge(shop,how='left',on='date').merge(mb,how='left',on='date')
+
+merged.columns = ['env','date','pypl','sq','lc','rdfn','ondk','tree','shop','mb']
+merged = merged.fillna(0)
+merged['fintech'] = (merged['env'] +merged['pypl']+merged['sq']+merged['lc']+merged['rdfn']+merged['ondk']+merged['tree']+merged['shop']+merged['mb'])/9
+
+exlending = env.merge(pypl,how='left',on='date').merge(sq,how='left',on='date').merge(rdfn,how='left',on='date').merge(tree,how='left',on='date').merge(shop,how='left',on='date').merge(mb,how='left',on='date')
+
+exlending.columns = ['env','date','pypl','sq','rdfn','tree','shop','mb']
+exlending = exlending.fillna(0)
+exlending['exlenders'] = (exlending['env']+exlending['pypl']+exlending['sq']+exlending['rdfn']+exlending['tree']+exlending['shop']+exlending['mb'])/7
+
+
+
+
+	
